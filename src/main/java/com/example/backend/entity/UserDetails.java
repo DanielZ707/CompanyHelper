@@ -2,32 +2,35 @@ package com.example.backend.entity;
 
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 
-public class UserEntityDetails implements UserDetails {
-    private final UserEntity entity;
+public class UserDetails implements org.springframework.security.core.userdetails.UserDetails {
+    private final User entity;
 
-    public UserEntityDetails(UserEntity entity) {
+    public UserDetails(User entity) {
         this.entity = entity;
     }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
 
-        if (entity.getRole() == UserEntity.Role.MANAGER) {
-            return Stream.of("ROLE_MANAGER")
+        if (entity.getRole() == User.Role.MANAGER) {
+            return Stream.of("MANAGER")
+                    .map(SimpleGrantedAuthority::new)
+                    .collect(Collectors.toSet());
+        } else if (entity.getRole() == User.Role.ADMIN) {
+            return Stream.of("ADMIN")
+                    .map(SimpleGrantedAuthority::new)
+                    .collect(Collectors.toSet());
+        } else {
+            return Stream.of("WORKER")
                     .map(SimpleGrantedAuthority::new)
                     .collect(Collectors.toSet());
         }
-
-        return Stream.of("ROLE_WORKER")
-                .map(SimpleGrantedAuthority::new)
-                .collect(Collectors.toSet());
     }
 
     @Override

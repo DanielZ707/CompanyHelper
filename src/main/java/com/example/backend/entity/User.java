@@ -1,15 +1,13 @@
 package com.example.backend.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 
 import java.util.Date;
 
 @Entity
-public class UserEntity {
+@Table(name = "users")
+public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -36,14 +34,17 @@ public class UserEntity {
             "4")
     private String password;
     private Role role;
+
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "idTeam", referencedColumnName = "idTeam")
     private Team team;
     private Date creationDate;
     private Date lastLoginDate;
 
-    public UserEntity() {
+    public User() {
     }
 
-    public UserEntity(String name, String surname, String email, String password, Role role, Team team) {
+    public User(String name, String surname, String email, String password, Role role, Team team) {
         this.name = name;
         this.surname = surname;
         this.email = email;
@@ -119,17 +120,18 @@ public class UserEntity {
         this.role = role;
     }
 
+    public Team getTeam() {
+        return team;
+    }
+
+    public void setTeam(Team team) {
+        this.team = team;
+    }
 
     public enum Role {
+        ADMIN,
         WORKER,
         MANAGER
     }
 
-    public enum Team {
-        MANAGER,
-        ALFA,
-        BETA,
-        GAMMA,
-        DELTA
-    }
 }

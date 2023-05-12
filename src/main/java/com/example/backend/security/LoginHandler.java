@@ -1,7 +1,7 @@
 package com.example.backend.security;
 
-import com.example.backend.entity.UserEntity;
-import com.example.backend.entity.UserEntityDetails;
+import com.example.backend.entity.User;
+import com.example.backend.entity.UserDetails;
 import com.example.backend.repository.UserRepo;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -19,8 +19,8 @@ public class LoginHandler implements AuthenticationSuccessHandler {
 
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication){
-        UserEntityDetails user = (UserEntityDetails) authentication.getPrincipal();
-        UserEntity currentUser = userRepo.findByEmail(user.getEmail());
+        UserDetails user = (UserDetails) authentication.getPrincipal();
+        User currentUser = userRepo.findByEmail(user.getEmail());
         userRepo.changeLoginDate(currentUser.getIdUser(), new Date());
     }
 }

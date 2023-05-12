@@ -1,11 +1,12 @@
 package com.example.backend.repository;
 
-import com.example.backend.entity.UserEntity;
-import com.example.backend.entity.UserEntityDetails;
-import org.springframework.security.core.userdetails.UserDetails;
+import com.example.backend.entity.User;
+import com.example.backend.entity.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.stereotype.Service;
 
+@Service
 public class UserService  implements UserDetailsService {
     private final UserRepo userRepo;
 
@@ -14,13 +15,13 @@ public class UserService  implements UserDetailsService {
     }
 
     @Override
-    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-            UserEntity userByEmail = userRepo.findByEmail(email);
+    public org.springframework.security.core.userdetails.UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+            User userByEmail = userRepo.findByEmail(email);
             if (userByEmail == null) {
                 throw new UsernameNotFoundException(email);
             }
 
-        return new UserEntityDetails(userByEmail);
+        return new UserDetails(userByEmail);
     }
 
 }
