@@ -16,8 +16,8 @@ public interface TeamRepo extends JpaRepository<Team, Long> {
 
     @Transactional
     @Modifying(clearAutomatically = true)
-    @Query(nativeQuery = true, value = "UPDATE teams SET name= :newTeamName WHERE idteam= :idTeam")
-    void changeTeamName(@Param("idTeam") Long idTeam, @Param("newTeamName") String newTeamName);
+    @Query(nativeQuery = true, value = "UPDATE teams SET name= :newTeamName WHERE name= :name")
+    void changeTeamName(@Param("name") String name, @Param("newTeamName") String newTeamName);
 
 
     @Transactional

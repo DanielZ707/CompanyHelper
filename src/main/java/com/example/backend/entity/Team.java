@@ -4,6 +4,10 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
+import lombok.ToString;
+
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Table(name = "teams")
@@ -20,12 +24,14 @@ public class Team {
     @JoinColumn(name = "idConstruction", referencedColumnName = "idConstruction")
     private Construction construction;
 
-    @OneToOne(mappedBy = "team")
-    private User user;
+    @OneToMany(mappedBy = "team")
+    @ToString.Exclude
+    private transient Set<User> users = new HashSet<>();
 
 
     public Team() {
     }
+
 
     public Team(String name) {
         this.name = name;
@@ -55,11 +61,12 @@ public class Team {
         this.construction = construction;
     }
 
-    public User getUser() {
-        return user;
+    public Set<User> getUsers() {
+        return users;
     }
 
-    public void setUser(User user) {
-        this.user = user;
+    public void setUsers(Set<User> users) {
+        this.users = users;
     }
+
 }

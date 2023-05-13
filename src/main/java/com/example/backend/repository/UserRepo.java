@@ -20,8 +20,8 @@ public interface UserRepo extends JpaRepository<User, Long> {
 
     @Transactional
     @Modifying(clearAutomatically = true)
-    @Query(nativeQuery = true, value = "UPDATE users SET password= :newPassword WHERE iduser= :idUser")
-    void changeUserPassword(@Param("idUser") Long idUser, @Param("newPassword") String newPassword);
+    @Query(nativeQuery = true, value = "UPDATE users SET password= :newPassword WHERE email= :email")
+    void changeUserPassword(@Param("email") String email, @Param("newPassword") String newPassword);
 
     @Transactional
     @Modifying(clearAutomatically = true)
@@ -30,6 +30,8 @@ public interface UserRepo extends JpaRepository<User, Long> {
 
     @Transactional
     @Modifying
-    @Query(nativeQuery = true, value = "UPDATE users SET lastlogindate= :lastLoginDate WHERE iduser= :idUser")
-    void changeLoginDate(@Param("idUser") Long idUser, @Param("lastLoginDate") Date lastLoginDate);
+    @Query(nativeQuery = true, value = "UPDATE users SET lastlogindate= :lastLoginDate WHERE email= :email")
+    void changeLoginDate(@Param("email") String email, @Param("lastLoginDate") Date lastLoginDate);
+
+
 }

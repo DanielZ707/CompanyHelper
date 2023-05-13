@@ -21,6 +21,6 @@ public class LoginHandler implements AuthenticationSuccessHandler {
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication){
         UserDetails user = (UserDetails) authentication.getPrincipal();
         User currentUser = userRepo.findByEmail(user.getEmail());
-        userRepo.changeLoginDate(currentUser.getIdUser(), new Date());
+        userRepo.changeLoginDate(currentUser.getEmail(), new Date());
     }
 }

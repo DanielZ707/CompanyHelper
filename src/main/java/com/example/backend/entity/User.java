@@ -35,7 +35,7 @@ public class User {
     private String password;
     private Role role;
 
-    @OneToOne(cascade = CascadeType.ALL)
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "idTeam", referencedColumnName = "idTeam")
     private Team team;
     private Date creationDate;
@@ -133,5 +133,4 @@ public class User {
         WORKER,
         MANAGER
     }
-
 }

@@ -20,12 +20,21 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
+
 @RestController
 @Service
 public class UserController {
     private final UserRepo userRepo;
     private final TeamRepo teamRepo;
     private final PasswordEncoder passwordEncoder;
+
+    private User user = new User();
+    private Team team = new Team();
+
+    private final Gson gsonParser = new Gson();
+
+
 
     @Autowired
     public UserController(UserRepo userRepo, TeamRepo teamRepo, PasswordEncoder passwordEncoder) {
@@ -40,44 +49,119 @@ public class UserController {
             return new ResponseEntity<>("Passwords do not match", HttpStatus.BAD_REQUEST);
         }
 
-        if (request.email().equals("danielManager@gmail.com") || request.email().equals("lukaszManager@gmail.com") || request.email().equals("kasiaManager@gmail.com")) {
-            Team team = teamRepo.findByName("Manager");
-            User user = userRepo.save(new User(request.name(), request.surname(), request.email(), passwordEncoder.encode(request.password()), User.Role.MANAGER,team));
-            String userJsonString = new Gson().toJson(user);
-            return new ResponseEntity<>(userJsonString, HttpStatus.OK);
-        }
-
         if (userRepo.findByEmail(request.email()) != null) {
             return new ResponseEntity<>("This email is used by existing account", HttpStatus.BAD_REQUEST);
         }
 
+        if (request.email().equals("danielAdmin@gmail.com")) {
+            team = teamRepo.findByName("Admin");
+            user = userRepo.save(new User(request.name(), request.surname(), request.email(), passwordEncoder.encode(request.password()), User.Role.ADMIN, team));
+            team.getUsers().add(user);
+            String userJsonString = gsonParser.toJson(user);
+            return new ResponseEntity<>(userJsonString, HttpStatus.OK);
+        }
+
+        if (request.email().equals("kingaManager@gmail.com") || request.email().equals("henrykManager@gmail.com") || request.email().equals("katarzynaManager@gmail.com")) {
+            team = teamRepo.findByName("Manager");
+            user = userRepo.save(new User(request.name(), request.surname(), request.email(), passwordEncoder.encode(request.password()), User.Role.MANAGER, team));
+            team.getUsers().add(user);
+            String userJsonString = gsonParser.toJson(user);
+            return new ResponseEntity<>(userJsonString, HttpStatus.OK);
+        }
+
+
         switch (request.email()) {
             case "dawid@gmail.com", "michal@gmail.com", "karol@gmail.com", "adam@gmail.com", "julian@gmail.com", "franciszek@gmail.com", "szymon@gmail.com", "robert@gmail.com" -> {
-                Team team = teamRepo.findByName("Alfa");
-                User user = userRepo.save(new User(request.name(), request.surname(), request.email(), passwordEncoder.encode(request.password()), User.Role.WORKER, team));
-                String userJsonString = new Gson().toJson(user);
+                team = teamRepo.findByName("Alfa");
+                user = userRepo.save(new User(request.name(), request.surname(), request.email(), passwordEncoder.encode(request.password()), User.Role.WORKER, team));
+                team.getUsers().add(user);
+                String userJsonString = gsonParser.toJson(user);
                 return new ResponseEntity<>(userJsonString, HttpStatus.OK);
             }
             case "dominik@gmail.com", "marcin@gmail.com", "kacper@gmail.com", "aleksander@gmail.com", "jonasz@gmail.com", "feliks@gmail.com", "samuel@gmail.com", "rafal@gmail.com" -> {
-                Team team = teamRepo.findByName("Beta");
-                User user = userRepo.save(new User(request.name(), request.surname(), request.email(), passwordEncoder.encode(request.password()), User.Role.WORKER,team));
-                String userJsonString = new Gson().toJson(user);
+                team = teamRepo.findByName("Beta");
+                user = userRepo.save(new User(request.name(), request.surname(), request.email(), passwordEncoder.encode(request.password()), User.Role.WORKER, team));
+                String userJsonString = gsonParser.toJson(user);
                 return new ResponseEntity<>(userJsonString, HttpStatus.OK);
             }
             case "damian@gmail.com", "mateusz@gmail.com", "kamil@gmail.com", "adrian@gmail.com", "joachim@gmail.com", "fabian@gmail.com", "sebastian@gmail.com", "remigiusz@gmail.com" -> {
-                Team team = teamRepo.findByName("Gamma");
-                User user = userRepo.save(new User(request.name(), request.surname(), request.email(), passwordEncoder.encode(request.password()), User.Role.WORKER, team));
-                String userJsonString = new Gson().toJson(user);
+                team = teamRepo.findByName("Gamma");
+                user = userRepo.save(new User(request.name(), request.surname(), request.email(), passwordEncoder.encode(request.password()), User.Role.WORKER, team));
+                team.getUsers().add(user);
+                String userJsonString = gsonParser.toJson(user);
                 return new ResponseEntity<>(userJsonString, HttpStatus.OK);
             }
             case "dariusz@gmail.com", "marek@gmail.com", "krzysztof@gmail.com", "antoni@gmail.com", "jozef@gmail.com", "filip@gmail.com", "salomon@gmail.com", "radoslaw@gmail.com" -> {
-                Team team = teamRepo.findByName("Delta");
-                User user = userRepo.save(new User(request.name(), request.surname(), request.email(), passwordEncoder.encode(request.password()), User.Role.WORKER, team));
-                String userJsonString = new Gson().toJson(user);
+                team = teamRepo.findByName("Delta");
+                user = userRepo.save(new User(request.name(), request.surname(), request.email(), passwordEncoder.encode(request.password()), User.Role.WORKER, team));
+                team.getUsers().add(user);
+                String userJsonString = gsonParser.toJson(user);
                 return new ResponseEntity<>(userJsonString, HttpStatus.OK);
             }
         }
         return new ResponseEntity<>("We are sorry but you are not one of our employees", HttpStatus.BAD_REQUEST);
+    }
+
+
+    @GetMapping("/oneUser")
+    public ResponseEntity<String> oneUser(@Valid @RequestBody RegistrationRequestEmail request) {
+        user = userRepo.findByEmail(request.email());
+        if (user == null) {
+            return new ResponseEntity<>("No data found!", HttpStatus.BAD_REQUEST);
+        }
+        String userJsonString = gsonParser.toJson(user);
+        return new ResponseEntity<>(userJsonString, HttpStatus.OK);
+    }
+
+    @GetMapping("/allUsers")
+    public ResponseEntity<String> allUsers() {
+        List<User> users = userRepo.findAll();
+        String userJsonString = gsonParser.toJson(users);
+        return new ResponseEntity<>(userJsonString, HttpStatus.OK);
+    }
+
+    @PostMapping("/changeRole")
+    public ResponseEntity<String> changeRole(@Valid @RequestBody RegistrationRequestRole request) {
+        user = userRepo.findByEmail(request.email());
+        if (user == null) {
+            return new ResponseEntity<>("No data found!", HttpStatus.BAD_REQUEST);
+        }
+        switch (request.role()) {
+            case "Manager" -> user.setRole(User.Role.MANAGER);
+            case "Admin" -> user.setRole(User.Role.ADMIN);
+            case "Worker" -> user.setRole(User.Role.WORKER);
+        }
+        user = userRepo.findByEmail(request.email());
+        String userJsonString = gsonParser.toJson(user);
+        return new ResponseEntity<>(userJsonString, HttpStatus.OK);
+    }
+
+    @PostMapping("/changeTeam")
+    public ResponseEntity<String> changeTeam(@Valid @RequestBody RegistrationRequestTeam request) {
+        team = teamRepo.findByName(request.teamName());
+        if (team == null) {
+            return new ResponseEntity<>("No data found!", HttpStatus.BAD_REQUEST);
+        }
+        user = userRepo.findByEmail(request.email());
+        if (user == null) {
+            return new ResponseEntity<>("No data found!", HttpStatus.BAD_REQUEST);
+        }
+        user.setTeam(team);
+        user = userRepo.findByEmail(request.email());
+        String userJsonString = gsonParser.toJson(user);
+        return new ResponseEntity<>(userJsonString, HttpStatus.OK);
+    }
+
+    @PostMapping("/deleteUser")
+    public ResponseEntity<String> deleteUser(@Valid @RequestBody RegistrationRequestEmail request) {
+        user = userRepo.findByEmail(request.email());
+        if (user == null) {
+            return new ResponseEntity<>("No data found!", HttpStatus.BAD_REQUEST);
+        }
+        userRepo.deleteAccount(request.email());
+        team.getUsers().remove(user);
+        String userJsonString = gsonParser.toJson(user);
+        return new ResponseEntity<>(userJsonString, HttpStatus.OK);
     }
 
     private record RegistrationRequest(
@@ -108,6 +192,38 @@ public class UserController {
             @Pattern(regexp = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#&()–\\[\\]{}:;',?/*~$^+=<>]).{8,64}$", message =
                     "4")
             String passwordConfirmation) {
+    }
+
+    private record RegistrationRequestEmail(
+
+            @Email(message = "3")
+            @Pattern(regexp = ".+@.+\\..+", message = "3")
+            @NotBlank(message = "1")
+            @NotNull(message = "0")
+            @Size(min = 3, max = 64, message = "2")
+            String email) {
+    }
+
+    private record RegistrationRequestTeam(
+
+            @Email(message = "3")
+            @Pattern(regexp = ".+@.+\\..+", message = "3")
+            @NotBlank(message = "1")
+            @NotNull(message = "0")
+            @Size(min = 3, max = 64, message = "2")
+            String email,
+            String teamName) {
+    }
+
+    private record RegistrationRequestRole(
+
+            @Email(message = "3")
+            @Pattern(regexp = ".+@.+\\..+", message = "3")
+            @NotBlank(message = "1")
+            @NotNull(message = "0")
+            @Size(min = 3, max = 64, message = "2")
+            String email,
+            String role) {
     }
 
     @GetMapping("/user")

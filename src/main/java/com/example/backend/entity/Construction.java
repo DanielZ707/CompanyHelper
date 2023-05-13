@@ -114,4 +114,18 @@ public class Construction {
     public void setTeam(Team team) {
         this.team = team;
     }
+
+    @Override
+    public String toString() {
+        return "Construction{" +
+                "idConstruction=" + idConstruction +
+                ", name='" + name + '\'' +
+                ", town='" + town + '\'' +
+                ", street='" + street + '\'' +
+                ", buildingNumber=" + buildingNumber +
+                ", dateOfBegging=" + dateOfBegging +
+                ", deadlineDay=" + deadlineDay +
+                ", team=" + team +
+                '}';
+    }
 }
