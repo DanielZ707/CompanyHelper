@@ -34,10 +34,10 @@ public class JPAConfig {
     @Bean
     public DataSource dataSource(){
         DriverManagerDataSource dataSource = new DriverManagerDataSource();
-        dataSource.setDriverClassName("org.postgresql.Driver");
-        dataSource.setUrl("jdbc:postgresql://ec2-54-78-142-10.eu-west-1.compute.amazonaws.com:5432/d5tqkua4d5eb3s");
-        dataSource.setUsername( "ucwkxfpmsevjac" );
-        dataSource.setPassword( "0d89c70da7992b61c3d908c1ee4596262b6480c4986eb6e93fd8d8a4e0115f3b" );
+        dataSource.setDriverClassName("");
+        dataSource.setUrl("");
+        dataSource.setUsername( "" );
+        dataSource.setPassword( "" );
         return dataSource;
     }
 
