@@ -1,6 +1,8 @@
 package com.example.backend.entity;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -28,12 +30,12 @@ public class Construction {
     @Size(min = 3, max = 30, message = "2")
     private String street;
 
-    @NotNull(message = "0")
-    @NotBlank(message = "1")
-    @Size(min = 1, message = "2")
+    @Min(1)
     private int buildingNumber;
 
+    @JsonFormat(pattern="yyyy-MM-dd")
     private Date dateOfBegging;
+    @JsonFormat(pattern="yyyy-MM-dd")
     private Date deadlineDay;
 
     @OneToOne(mappedBy = "construction")

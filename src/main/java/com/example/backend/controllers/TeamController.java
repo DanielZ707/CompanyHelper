@@ -27,6 +27,12 @@ public class TeamController {
     private final TeamRepo teamRepo;
     private final ConstructionRepo constructionRepo;
 
+    private Team team = new Team();
+
+    private final Gson gsonParser = new Gson();
+
+    private String teamJsonString;
+
     @Autowired
     public TeamController(TeamRepo teamRepo, ConstructionRepo constructionRepo) {
 
@@ -40,8 +46,8 @@ public class TeamController {
         if (teamRepo.findByName(request.name()) != null) {
             return new ResponseEntity<>("This team has already existed", HttpStatus.BAD_REQUEST);
         } else {
-            Team team = teamRepo.save(new Team(request.name()));
-            String teamJsonString = new Gson().toJson(team);
+            team = teamRepo.save(new Team(request.name()));
+            teamJsonString = gsonParser.toJson(team);
             return new ResponseEntity<>(teamJsonString, HttpStatus.OK);
         }
     }
@@ -49,40 +55,40 @@ public class TeamController {
     @GetMapping("/allTeams")
     public ResponseEntity<String> allTeams() {
         List<Team> teams = teamRepo.findAll();
-        String teamsJsonString = new Gson().toJson(teams);
-        return new ResponseEntity<>(teamsJsonString, HttpStatus.OK);
+        teamJsonString = gsonParser.toJson(teams);
+        return new ResponseEntity<>(teamJsonString, HttpStatus.OK);
     }
 
     @GetMapping("/oneTeam")
     public ResponseEntity<String> oneTeam(@Valid @RequestBody TeamController.TeamRequest request) {
-        Team team = teamRepo.findByName(request.name());
+        team = teamRepo.findByName(request.name());
         if (team == null) {
             return new ResponseEntity<>("No data found!", HttpStatus.BAD_REQUEST);
         }
-        String teamJsonString = new Gson().toJson(team);
+        teamJsonString = gsonParser.toJson(team);
         return new ResponseEntity<>(teamJsonString, HttpStatus.OK);
     }
 
     @PostMapping("/deleteTeam")
     public ResponseEntity<String> deleteTeam(@Valid @RequestBody TeamController.TeamRequest request) {
-        Team team = teamRepo.findByName(request.name());
+        team = teamRepo.findByName(request.name());
         if (team == null) {
             return new ResponseEntity<>("No data found!", HttpStatus.BAD_REQUEST);
         }
         teamRepo.deleteTeam(request.name());
-        String teamJsonString = new Gson().toJson(team);
+        teamJsonString = gsonParser.toJson(team);
         return new ResponseEntity<>(teamJsonString, HttpStatus.OK);
     }
 
     @PostMapping("/nameTeam")
     public ResponseEntity<String> changeTeamName(@Valid @RequestBody TeamController.TeamRequestChangeName request) {
-        Team team = teamRepo.findByName(request.name());
+        team = teamRepo.findByName(request.name());
         if (team == null) {
             return new ResponseEntity<>("No data found!", HttpStatus.BAD_REQUEST);
         }
         teamRepo.changeTeamName(request.name(), request.newName());
         team = teamRepo.findByName(request.newName());
-        String teamJsonString = new Gson().toJson(team);
+        teamJsonString = gsonParser.toJson(team);
         return new ResponseEntity<>(teamJsonString, HttpStatus.OK);
     }
 
@@ -92,13 +98,13 @@ public class TeamController {
         if (construction == null) {
             return new ResponseEntity<>("No data found!", HttpStatus.BAD_REQUEST);
         }
-        Team team = teamRepo.findByName(request.name());
+        team = teamRepo.findByName(request.name());
         if (team == null) {
             return new ResponseEntity<>("No data found!", HttpStatus.BAD_REQUEST);
         }
         team.setConstruction(construction);
         team = teamRepo.findByName(request.name());
-        String teamJsonString = new Gson().toJson(team);
+        teamJsonString = gsonParser.toJson(team);
         return new ResponseEntity<>(teamJsonString, HttpStatus.OK);
     }
 

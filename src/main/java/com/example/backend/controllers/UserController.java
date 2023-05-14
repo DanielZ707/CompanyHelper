@@ -34,7 +34,7 @@ public class UserController {
 
     private final Gson gsonParser = new Gson();
 
-
+    private String userJsonString;
 
     @Autowired
     public UserController(UserRepo userRepo, TeamRepo teamRepo, PasswordEncoder passwordEncoder) {
@@ -57,7 +57,7 @@ public class UserController {
             team = teamRepo.findByName("Admin");
             user = userRepo.save(new User(request.name(), request.surname(), request.email(), passwordEncoder.encode(request.password()), User.Role.ADMIN, team));
             team.getUsers().add(user);
-            String userJsonString = gsonParser.toJson(user);
+            userJsonString = gsonParser.toJson(user);
             return new ResponseEntity<>(userJsonString, HttpStatus.OK);
         }
 
@@ -65,7 +65,7 @@ public class UserController {
             team = teamRepo.findByName("Manager");
             user = userRepo.save(new User(request.name(), request.surname(), request.email(), passwordEncoder.encode(request.password()), User.Role.MANAGER, team));
             team.getUsers().add(user);
-            String userJsonString = gsonParser.toJson(user);
+            userJsonString = gsonParser.toJson(user);
             return new ResponseEntity<>(userJsonString, HttpStatus.OK);
         }
 
@@ -75,27 +75,27 @@ public class UserController {
                 team = teamRepo.findByName("Alfa");
                 user = userRepo.save(new User(request.name(), request.surname(), request.email(), passwordEncoder.encode(request.password()), User.Role.WORKER, team));
                 team.getUsers().add(user);
-                String userJsonString = gsonParser.toJson(user);
+                userJsonString = gsonParser.toJson(user);
                 return new ResponseEntity<>(userJsonString, HttpStatus.OK);
             }
             case "dominik@gmail.com", "marcin@gmail.com", "kacper@gmail.com", "aleksander@gmail.com", "jonasz@gmail.com", "feliks@gmail.com", "samuel@gmail.com", "rafal@gmail.com" -> {
                 team = teamRepo.findByName("Beta");
                 user = userRepo.save(new User(request.name(), request.surname(), request.email(), passwordEncoder.encode(request.password()), User.Role.WORKER, team));
-                String userJsonString = gsonParser.toJson(user);
+                userJsonString = gsonParser.toJson(user);
                 return new ResponseEntity<>(userJsonString, HttpStatus.OK);
             }
             case "damian@gmail.com", "mateusz@gmail.com", "kamil@gmail.com", "adrian@gmail.com", "joachim@gmail.com", "fabian@gmail.com", "sebastian@gmail.com", "remigiusz@gmail.com" -> {
                 team = teamRepo.findByName("Gamma");
                 user = userRepo.save(new User(request.name(), request.surname(), request.email(), passwordEncoder.encode(request.password()), User.Role.WORKER, team));
                 team.getUsers().add(user);
-                String userJsonString = gsonParser.toJson(user);
+                userJsonString = gsonParser.toJson(user);
                 return new ResponseEntity<>(userJsonString, HttpStatus.OK);
             }
             case "dariusz@gmail.com", "marek@gmail.com", "krzysztof@gmail.com", "antoni@gmail.com", "jozef@gmail.com", "filip@gmail.com", "salomon@gmail.com", "radoslaw@gmail.com" -> {
                 team = teamRepo.findByName("Delta");
                 user = userRepo.save(new User(request.name(), request.surname(), request.email(), passwordEncoder.encode(request.password()), User.Role.WORKER, team));
                 team.getUsers().add(user);
-                String userJsonString = gsonParser.toJson(user);
+                userJsonString = gsonParser.toJson(user);
                 return new ResponseEntity<>(userJsonString, HttpStatus.OK);
             }
         }
@@ -109,14 +109,14 @@ public class UserController {
         if (user == null) {
             return new ResponseEntity<>("No data found!", HttpStatus.BAD_REQUEST);
         }
-        String userJsonString = gsonParser.toJson(user);
+        userJsonString = gsonParser.toJson(user);
         return new ResponseEntity<>(userJsonString, HttpStatus.OK);
     }
 
     @GetMapping("/allUsers")
     public ResponseEntity<String> allUsers() {
         List<User> users = userRepo.findAll();
-        String userJsonString = gsonParser.toJson(users);
+        userJsonString = gsonParser.toJson(users);
         return new ResponseEntity<>(userJsonString, HttpStatus.OK);
     }
 
@@ -132,7 +132,7 @@ public class UserController {
             case "Worker" -> user.setRole(User.Role.WORKER);
         }
         user = userRepo.findByEmail(request.email());
-        String userJsonString = gsonParser.toJson(user);
+        userJsonString = gsonParser.toJson(user);
         return new ResponseEntity<>(userJsonString, HttpStatus.OK);
     }
 
@@ -148,7 +148,7 @@ public class UserController {
         }
         user.setTeam(team);
         user = userRepo.findByEmail(request.email());
-        String userJsonString = gsonParser.toJson(user);
+        userJsonString = gsonParser.toJson(user);
         return new ResponseEntity<>(userJsonString, HttpStatus.OK);
     }
 
@@ -160,7 +160,7 @@ public class UserController {
         }
         userRepo.deleteAccount(request.email());
         team.getUsers().remove(user);
-        String userJsonString = gsonParser.toJson(user);
+        userJsonString = gsonParser.toJson(user);
         return new ResponseEntity<>(userJsonString, HttpStatus.OK);
     }
 
