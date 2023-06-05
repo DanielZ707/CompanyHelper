@@ -1,4 +1,4 @@
-package com.example.backend.entity;
+package com.example.backend.models.entity;
 
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -40,7 +40,7 @@ public class UserDetails implements org.springframework.security.core.userdetail
 
     @Override
     public String getUsername() {
-        return null;
+        return entity.getEmail();
     }
 
     public String getName() {
