@@ -1,80 +1,74 @@
 package com.example.backend.security;
 
-import com.example.backend.repository.UserRepo;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.example.backend.models.repository.LogoutService;
+import com.example.backend.models.repository.UserRepo;
+import com.example.backend.models.repository.UserService;
+import jakarta.servlet.http.HttpServletResponse;
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpStatus;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.AuthenticationProvider;
+import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.authentication.HttpStatusEntryPoint;
-import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
-import org.springframework.web.reactive.config.ResourceHandlerRegistry;
-
-import javax.servlet.http.HttpServletResponse;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
 @EnableWebSecurity
+@RequiredArgsConstructor
 public class SecurityConfig {
 
     private final UserRepo userRepo;
+    private final JwtAuthFilter jwtAuthFilter;
+    private final LogoutService logoutService;
 
-
-    @Autowired
-    public SecurityConfig(UserRepo userRepo) {
-        this.userRepo = userRepo;
+    @Bean
+    SecurityFilterChain SecurityFilterChain(HttpSecurity http) throws Exception{
+        http
+                .cors()
+                .and()
+                .csrf().disable()
+                .authorizeHttpRequests()
+                .requestMatchers("/authenticate","/register","/logout","/")
+                .permitAll()
+                .anyRequest()
+                .authenticated()
+                .and()
+                .sessionManagement()
+                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                .and()
+                .authenticationProvider(authenticationProvider())
+                .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
+                .logout()
+                .logoutUrl("/logout")
+                .permitAll()
+                .addLogoutHandler(logoutService)
+                .logoutSuccessHandler((request, response, authentication) -> {response.setStatus(HttpServletResponse.SC_OK); response.setHeader("Access-Control-Allow-Origin", request.getHeader("Origin"));SecurityContextHolder.clearContext();});
+        return http.build();
     }
 
     @Bean
-    SecurityFilterChain defaultSecurityFilterChain(HttpSecurity http) throws Exception{
-        http
-                .authorizeHttpRequests()
-                .anyRequest()
-                .permitAll()
-                .and()
-                .formLogin()
-                .loginPage("/login").successHandler(new LoginHandler(userRepo))
-                .failureHandler((request, response, exception) -> {
-                    response.setContentType("text/plain");
-                    response.getWriter().write("Invalid username or password");
-                    response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+    public AuthenticationProvider authenticationProvider() {
+        final DaoAuthenticationProvider authenticationProvider = new DaoAuthenticationProvider();
+        authenticationProvider.setUserDetailsService(new UserService(userRepo));
+        authenticationProvider.setPasswordEncoder(passwordEncoder());
+        return authenticationProvider;
+    }
 
-                    response.flushBuffer();
-                })
-                .and()
-                .exceptionHandling().authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED))
-                .and()
-                .logout().logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
-                .logoutSuccessHandler((request, response, authentication) -> response.setStatus(HttpServletResponse.SC_OK))
-                .invalidateHttpSession(true)
-                .deleteCookies("JSESSIONID")
-                .and()
-                .csrf().disable()
-                .sessionManagement().invalidSessionStrategy((request, response) -> {
-                    response.setStatus(400);
-                    response.addHeader("session-expired", "true");
-                })
-                .sessionCreationPolicy(SessionCreationPolicy.ALWAYS)
-                .maximumSessions(1).maxSessionsPreventsLogin(true);
-
-        return http.build();
+    @Bean
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration configuration) throws Exception {
+      return configuration.getAuthenticationManager();
     }
 
     @Bean
     public PasswordEncoder passwordEncoder(){
         return new BCryptPasswordEncoder();
-    }
-
-
-    public void addResourceHandlers(ResourceHandlerRegistry registry) {
-        registry.addResourceHandler("swagger-ui.html")
-                .addResourceLocations("classpath:/META-INF/resources/");
-
-        registry.addResourceHandler("/webjars/**")
-                .addResourceLocations("classpath:/META-INF/resources/webjars/");
     }
 }
