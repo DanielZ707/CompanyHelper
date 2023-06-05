@@ -1,6 +1,6 @@
-package com.example.backend.repository;
+package com.example.backend.models.repository;
 
-import com.example.backend.entity.Construction;
+import com.example.backend.models.entity.Construction;
 import jakarta.transaction.Transactional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
@@ -22,6 +22,11 @@ public interface ConstructionRepo extends JpaRepository<Construction, Long> {
     @Modifying(clearAutomatically = true)
     @Query(nativeQuery = true, value = "UPDATE constructions SET name= :newConstructionName WHERE name= :name")
     void changeConstructionName(@Param("name") String name, @Param("newConstructionName") String newConstructionName);
+
+    @Transactional
+    @Modifying(clearAutomatically = true)
+    @Query(nativeQuery = true, value = "UPDATE constructions SET progress= :newProgress WHERE name= :name")
+    void changeConstructionProgress(@Param("name") String name, @Param("newProgress") int newProgress);
 
     @Transactional
     @Modifying(clearAutomatically = true)
