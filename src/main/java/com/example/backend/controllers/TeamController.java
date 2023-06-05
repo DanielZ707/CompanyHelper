@@ -1,10 +1,11 @@
 package com.example.backend.controllers;
 
-import com.example.backend.entity.Construction;
-import com.example.backend.entity.Team;
-import com.example.backend.repository.ConstructionRepo;
-import com.example.backend.repository.TeamRepo;
+import com.example.backend.models.entity.Construction;
+import com.example.backend.models.entity.Team;
+import com.example.backend.models.repository.ConstructionRepo;
+import com.example.backend.models.repository.TeamRepo;
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -26,10 +27,9 @@ public class TeamController {
 
     private final TeamRepo teamRepo;
     private final ConstructionRepo constructionRepo;
-
     private Team team = new Team();
 
-    private final Gson gsonParser = new Gson();
+    private final Gson gsonParser = new GsonBuilder().setDateFormat("yyyy-MM-dd").serializeNulls().excludeFieldsWithoutExposeAnnotation().create();
 
     private String teamJsonString;
 
@@ -56,12 +56,24 @@ public class TeamController {
     public ResponseEntity<String> allTeams() {
         List<Team> teams = teamRepo.findAll();
         teamJsonString = gsonParser.toJson(teams);
+        System.out.println(teamJsonString);
         return new ResponseEntity<>(teamJsonString, HttpStatus.OK);
     }
 
-    @GetMapping("/oneTeam")
+    @PostMapping("/oneTeam")
     public ResponseEntity<String> oneTeam(@Valid @RequestBody TeamController.TeamRequest request) {
         team = teamRepo.findByName(request.name());
+        if (team == null) {
+            return new ResponseEntity<>("No data found!", HttpStatus.BAD_REQUEST);
+        }
+        teamJsonString = gsonParser.toJson(team);
+        return new ResponseEntity<>(teamJsonString, HttpStatus.OK);
+    }
+
+    @PostMapping("/constructionTeam")
+    public ResponseEntity<String> consTeam(@Valid @RequestBody TeamController.TeamRequest request) {
+        Construction construction = constructionRepo.findByName(request.name);
+        team = teamRepo.findByIdCon(construction.getIdConstruction());
         if (team == null) {
             return new ResponseEntity<>("No data found!", HttpStatus.BAD_REQUEST);
         }
@@ -92,28 +104,16 @@ public class TeamController {
         return new ResponseEntity<>(teamJsonString, HttpStatus.OK);
     }
 
-    @PostMapping("/assignToCon")
-    public ResponseEntity<String> assignToCon(@Valid @RequestBody TeamController.TeamRequestAssignToCon request) {
-        Construction construction = constructionRepo.findByName(request.nameCon());
-        if (construction == null) {
-            return new ResponseEntity<>("No data found!", HttpStatus.BAD_REQUEST);
-        }
-        team = teamRepo.findByName(request.name());
-        if (team == null) {
-            return new ResponseEntity<>("No data found!", HttpStatus.BAD_REQUEST);
-        }
-        team.setConstruction(construction);
-        team = teamRepo.findByName(request.name());
-        teamJsonString = gsonParser.toJson(team);
-        return new ResponseEntity<>(teamJsonString, HttpStatus.OK);
-    }
-
-
     private record TeamRequest(
             @NotNull(message = "0")
             @NotBlank(message = "1")
             @Size(min = 3, max = 40, message = "2")
             String name) {
+
+    }
+
+    private record TeamRequestCons(
+            Long id) {
 
     }
 
@@ -130,16 +130,5 @@ public class TeamController {
 
     }
 
-    private record TeamRequestAssignToCon(
-            @NotNull(message = "0")
-            @NotBlank(message = "1")
-            @Size(min = 3, max = 40, message = "2")
-            String name,
-            @NotNull(message = "0")
-            @NotBlank(message = "1")
-            @Size(min = 3, max = 40, message = "2")
-            String nameCon) {
-
-    }
 
 }
