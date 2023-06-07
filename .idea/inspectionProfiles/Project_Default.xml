@@ -1,0 +1,27 @@
+<component name="InspectionProjectProfileManager">
+  <profile version="1.0">
+    <option name="myName" value="Project Default" />
+    <inspection_tool class="CssUnknownProperty" enabled="true" level="WARNING" enabled_by_default="true">
+      <option name="myCustomPropertiesEnabled" value="true" />
+      <option name="myIgnoreVendorSpecificProperties" value="true" />
+      <option name="myCustomPropertiesList">
+        <value>
+          <list size="3">
+            <item index="0" class="java.lang.String" itemvalue="flex-negative" />
+            <item index="1" class="java.lang.String" itemvalue="box-sizing" />
+            <item index="2" class="java.lang.String" itemvalue="flex-preferred-size" />
+          </list>
+        </value>
+      </option>
+    </inspection_tool>
+    <inspection_tool class="DuplicatedCode" enabled="true" level="WEAK WARNING" enabled_by_default="true">
+      <Languages>
+        <language minSize="429" name="JavaScript" />
+      </Languages>
+    </inspection_tool>
+    <inspection_tool class="Eslint" enabled="true" level="WARNING" enabled_by_default="true" />
+    <inspection_tool class="RequiredAttributes" enabled="true" level="WARNING" enabled_by_default="true">
+      <option name="myAdditionalRequiredHtmlAttributes" value="label,interpolation,tickValues,categories,axisValue,axisComponent,dependentAxis,fixLabelOverlap,events,fixLabelOverlap,gridComponent,gridComponent,fixLabelOverlap,gridComponent,groupComponent,fixLabelOverlap,axisComponent,tickCount,gridComponent,groupComponent,crossAxis,fixLabelOverlap,gridComponent,fixLabelOverlap,gridComponent,groupComponent,fixLabelOverlap,gridComponent,dependentAxis,gridComponent,gridComponent,origin,stringMap,offsetY,fixLabelOverlap,invertAxis,invertAxis,gridComponent,axisComponent,axisComponent,axisComponent,gridComponent,groupComponent,fixLabelOverlap,children" />
+    </inspection_tool>
+  </profile>
+</component>
