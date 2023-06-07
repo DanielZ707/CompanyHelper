@@ -62,6 +62,7 @@ public class User {
     private String job;
 
     @Expose
+    @Enumerated(EnumType.STRING)
     private Role role;
 
     @ManyToOne(cascade = CascadeType.ALL)

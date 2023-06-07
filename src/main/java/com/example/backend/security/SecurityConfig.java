@@ -36,7 +36,7 @@ public class SecurityConfig {
                 .and()
                 .csrf().disable()
                 .authorizeHttpRequests()
-                .requestMatchers("/authenticate","/register","/logout","/")
+                .requestMatchers("/authenticate","/register","/logout","/","/send*","/ws-chat/**")
                 .permitAll()
                 .anyRequest()
                 .authenticated()

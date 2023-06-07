@@ -27,6 +27,16 @@ public interface UserRepo extends JpaRepository<User, Long> {
 
     @Transactional
     @Modifying(clearAutomatically = true)
+    @Query(nativeQuery = true, value = "UPDATE users SET idteam= :newIdTeam WHERE email= :email")
+    void changeUserTeam(@Param("email") String email, @Param("newIdTeam") Long newIdTeam);
+
+    @Transactional
+    @Modifying(clearAutomatically = true)
+    @Query(nativeQuery = true, value = "UPDATE users SET role= :newRole WHERE email= :email")
+    void changeUserRole(@Param("email") String email, @Param("newRole") String newRole);
+
+    @Transactional
+    @Modifying(clearAutomatically = true)
     @Query(nativeQuery = true, value = "SELECT * FROM users WHERE idteam= :idTeam")
     List<User> findUsersFromTeam(@Param("idTeam") Long idTeam);
 

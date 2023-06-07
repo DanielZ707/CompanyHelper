@@ -68,6 +68,28 @@ public class UserController {
         tokenRepository.save(token);
     }
 
+
+    @PostMapping("/registerAdmin")
+    public ResponseEntity<String> registerUserAdmin(@Valid @RequestBody RegistrationRequest request) {
+
+        if (!request.password().equals(request.passwordConfirmation())) {
+            return new ResponseEntity<>("Passwords do not match", HttpStatus.BAD_REQUEST);
+        }
+
+        if (userRepo.findByEmail(request.email()).isPresent()) {
+            return new ResponseEntity<>("This email is used by existing account", HttpStatus.BAD_REQUEST);
+        }
+
+        team = teamRepo.findByName(request.team());
+        user = userRepo.save(new User(request.name(), request.surname(), request.email(), passwordEncoder.encode(request.password()), request.telephone(), request.job(), User.Role.WORKER, team));
+        assert team.getUsers() != null;
+        team.getUsers().add(user);
+        userJsonString = gsonParser.toJson(user);
+        return new ResponseEntity<>(userJsonString, HttpStatus.OK);
+
+    }
+
+
     @PostMapping("/register")
     public ResponseEntity<String> registerUser(@Valid @RequestBody RegistrationRequest request) {
 
@@ -84,9 +106,6 @@ public class UserController {
             user = userRepo.save(new User(request.name(), request.surname(), request.email(), passwordEncoder.encode(request.password()), request.telephone(), request.job(), User.Role.ADMIN, team));
             team.getUsers().add(user);
             userJsonString = gsonParser.toJson(user);
-            var jwtToken = jwtService.generateToken(new UserDetails(user));
-            var refreshToken = jwtService.generateRefreshToken(new UserDetails(user));
-            saveUserToken(user, jwtToken);
             return new ResponseEntity<>(userJsonString, HttpStatus.OK);
         }
 
@@ -95,9 +114,6 @@ public class UserController {
             user = userRepo.save(new User(request.name(), request.surname(), request.email(), passwordEncoder.encode(request.password()), request.telephone(), request.job(), User.Role.MANAGER, team));
             team.getUsers().add(user);
             userJsonString = gsonParser.toJson(user);
-            var jwtToken = jwtService.generateToken(new UserDetails(user));
-            var refreshToken = jwtService.generateRefreshToken(new UserDetails(user));
-            saveUserToken(user, jwtToken);
             return new ResponseEntity<>(userJsonString, HttpStatus.OK);
         }
         team = teamRepo.findByName(request.team());
@@ -105,9 +121,6 @@ public class UserController {
         assert team.getUsers() != null;
         team.getUsers().add(user);
         userJsonString = gsonParser.toJson(user);
-        var jwtToken = jwtService.generateToken(new UserDetails(user));
-        var refreshToken = jwtService.generateRefreshToken(new UserDetails(user));
-        saveUserToken(user, jwtToken);
         return new ResponseEntity<>(userJsonString, HttpStatus.OK);
 
     }
@@ -120,6 +133,7 @@ public class UserController {
             return new ResponseEntity<>("No data found!", HttpStatus.BAD_REQUEST);
         }
         userJsonString = gsonParser.toJson(user);
+        System.out.println(userJsonString);
         return new ResponseEntity<>(userJsonString, HttpStatus.OK);
     }
 
@@ -163,23 +177,30 @@ public class UserController {
 
     @PostMapping("/changeRole")
     public ResponseEntity<String> changeRole(@Valid @RequestBody requestRole request) {
+        boolean knownRole = true;
         user = userRepo.findByEmail(request.email()).orElse(null);
         if (user == null) {
             return new ResponseEntity<>("No data found!", HttpStatus.BAD_REQUEST);
         }
         switch (request.role()) {
-            case "Manager" -> user.setRole(User.Role.MANAGER);
-            case "Admin" -> user.setRole(User.Role.ADMIN);
-            case "Worker" -> user.setRole(User.Role.WORKER);
+            case "Manager" -> userRepo.changeUserRole(request.email(), "MANAGER");
+            case "Admin" -> userRepo.changeUserRole(request.email(), "ADMIN");
+            case "Worker" -> userRepo.changeUserRole(request.email(), "WORKER");
+            default -> knownRole=false;
+        }
+        if(!knownRole){
+            return new ResponseEntity<>("This role is not existed!", HttpStatus.BAD_REQUEST);
         }
         user = userRepo.findByEmail(request.email()).orElse(null);
         userJsonString = gsonParser.toJson(user);
+        System.out.println(userJsonString);
         return new ResponseEntity<>(userJsonString, HttpStatus.OK);
     }
 
     @PostMapping("/changeTeam")
     public ResponseEntity<String> changeTeam(@Valid @RequestBody requestTeam request) {
         team = teamRepo.findByName(request.teamName());
+        System.out.println(team.getName());
         if (team == null) {
             return new ResponseEntity<>("No data found!", HttpStatus.BAD_REQUEST);
         }
@@ -187,9 +208,11 @@ public class UserController {
         if (user == null) {
             return new ResponseEntity<>("No data found!", HttpStatus.BAD_REQUEST);
         }
-        user.setTeam(team);
+        System.out.println(user.getName());
+        userRepo.changeUserTeam(user.getEmail(),team.getIdTeam());
         user = userRepo.findByEmail(request.email()).orElse(null);
         userJsonString = gsonParser.toJson(user);
+        System.out.println(userJsonString);
         return new ResponseEntity<>(userJsonString, HttpStatus.OK);
     }
 
@@ -223,7 +246,13 @@ public class UserController {
         if (user == null) {
             return new ResponseEntity<>("No data found!", HttpStatus.BAD_REQUEST);
         }
+        if (user.getRole() == User.Role.ADMIN) {
+            return new ResponseEntity<>("You can not delete Administrator!", HttpStatus.BAD_REQUEST);
+        }
+        team = teamRepo.findByName(user.getTeam().getName());
+        tokenRepository.deleteTokens(user.getIdUser());
         userRepo.deleteAccount(request.email());
+        assert team.getUsers() != null;
         team.getUsers().remove(user);
         userJsonString = gsonParser.toJson(user);
         return new ResponseEntity<>(userJsonString, HttpStatus.OK);
