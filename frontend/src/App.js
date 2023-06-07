@@ -21,7 +21,6 @@ import ConstructionsAdmin from "./components/ConstructionsAdmin";
 import EmployeesBoxManager from "./components/EmployeesBoxManager";
 import ConstructionsManager from "./components/ConstructionsManager";
 import AddEmployeeAdmin from "./components/AddEmployeeAdmin";
-import CalendarPage from "./components/CalendarPage";
 import MessagesApp from "./components/MessagesApp";
 
 function App() {

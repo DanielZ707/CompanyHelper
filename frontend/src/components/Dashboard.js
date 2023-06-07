@@ -11,7 +11,6 @@ const Dashboard = () => {
 
     const [user, setUser] = useState("")
 
-    const [team, setTeam] = useState("")
     const navigate = useNavigate();
 
     const [constructions, setConstructions] = useState("")
@@ -29,7 +28,6 @@ const Dashboard = () => {
                 }
             }).then((res) => {
                 setUsers(res.data)
-            }, fail => {
             })
             Axios.get("http://localhost:8080/allConstructions", {
                 headers: {
@@ -37,8 +35,6 @@ const Dashboard = () => {
                 }
             }).then((res) => {
                 setConstructions(res.data)
-            }, fail => {
-
             })
 
         Axios.post("http://localhost:8080/oneUser", {
@@ -49,10 +45,9 @@ const Dashboard = () => {
             }
         }).then((res) => {
             setUser(res.data)
-            setTeam(res.data.team)
             console.log(res.data)
         }, fail => {
-            if(fail.message=="Request failed with status code 403"){
+            if(fail.message==="Request failed with status code 403"){
                 alert("You have no permission to access the data!")
                 navigate('/')
             }
@@ -61,7 +56,7 @@ const Dashboard = () => {
         })
 
 
-    }, [email, token]);
+    }, [email, navigate, token]);
 
     const current = new Date();
     const date = `${current.toDateString()}`;
@@ -93,7 +88,7 @@ const Dashboard = () => {
                 <div className="dashboardNavi">
                     {constructions &&
                         constructions.length > 0 &&
-                        constructions.map(({idConstruction, name, town, street, buildingNumber, deadlineDay, progress}) => {
+                        constructions.map(({name}) => {
                             return (<Construction nameCon = {name}/>);
                         })}
                 </div>

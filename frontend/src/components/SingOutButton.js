@@ -1,4 +1,4 @@
-import React, {useState} from "react"
+import React from "react"
 import {Link, useNavigate} from "react-router-dom";
 import axios from "axios";
 
@@ -6,7 +6,6 @@ import axios from "axios";
 const SignOutComponent = () => {
 
     const navigate = useNavigate();
-    const token = localStorage.getItem('user');
 
     async function logout(event) {
         event.preventDefault();
@@ -17,7 +16,7 @@ const SignOutComponent = () => {
                 localStorage.removeItem('email')
                 navigate('/');
             }, fail => {
-                if(fail.message=="Request failed with status code 403"){
+                if(fail.message==="Request failed with status code 403"){
                     alert("You have no permission to access the data!")
                     navigate('/')
                 }

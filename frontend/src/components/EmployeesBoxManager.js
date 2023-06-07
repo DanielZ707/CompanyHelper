@@ -4,7 +4,7 @@ import {faSquarePlus} from "@fortawesome/free-regular-svg-icons";
 import Navbar from "./Navbar";
 import React, {useEffect, useState} from "react";
 import Axios from "axios";
-import {Link, useNavigate} from "react-router-dom";
+import {useNavigate} from "react-router-dom";
 import axios from "axios";
 import Popup from "reactjs-popup";
 
@@ -37,7 +37,7 @@ const EmployeesBoxManager = () => {
                 console.log(res.data);
                 refreshPage()
             }, fail => {
-                if(fail.message=="Request failed with status code 403"){
+                if(fail.message==="Request failed with status code 403"){
                     alert("You have no permission to access the data!")
                     navigate('/')
                 }
@@ -102,7 +102,6 @@ const EmployeesBoxManager = () => {
             }
         }).then((res) => {
             setManagers(res.data)
-        }, fail => {
         })
     }, [token]);
 
@@ -113,11 +112,11 @@ const EmployeesBoxManager = () => {
             }
         }).then((res) => {
             setUsers(res.data)
-        }, fail => {
+        }, () => {
             alert("You have no permission to access the data!")
             navigate("/")
         })
-    }, [token]);
+    }, [navigate,token]);
 
     return (
         <div className="employeesPage">
@@ -126,7 +125,7 @@ const EmployeesBoxManager = () => {
                 <div className="dashboardUp">
                     {managers &&
                         managers.length > 0 &&
-                        managers.map(({_id, name, surname, email, password, telephone, job, team}) => {
+                        managers.map(({_id, name, surname, job}) => {
                             return (
                                 <div className="avatarBackground">
                                     <div className="avatar">
@@ -148,7 +147,7 @@ const EmployeesBoxManager = () => {
                         <div className="employeesFlex">
                             {users &&
                                 users.length > 0 &&
-                                users.map(({idUser, name, surname, email, password, telephone, job, team,role}) => {
+                                users.map(({idUser, name, surname, email, telephone, job, team,role}) => {
                                     return (<div className="usersWithButtons">
                                             <div className="post-card" key={idUser}>
                                                 <div className="employeesNameColumn">
@@ -179,7 +178,7 @@ const EmployeesBoxManager = () => {
                                             <div className="popupAdmin">
                                                 <Popup trigger={<button type="submit">Change Team</button>} modal
                                                        nested>
-                                                    {close => (
+                                                    {() => (
                                                         <div className="modal-team">
                                                             <div className="actions-team">
                                                                 <div className="setTeam-admin">
@@ -219,7 +218,7 @@ const EmployeesBoxManager = () => {
                                                 </Popup>
                                                 <Popup trigger={<button type="submit">Change Role</button>} modal
                                                        nested>
-                                                    {close => (
+                                                    {() => (
                                                         <div className="modal-team-role">
                                                             <div className="actions-team">
                                                                 <div className="setTeam-admin-role">

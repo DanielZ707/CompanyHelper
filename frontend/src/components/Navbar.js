@@ -1,7 +1,6 @@
 import logo from "../images/logo.png";
 import {NavLink, useNavigate} from "react-router-dom";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import NotificationsIcon from '@mui/icons-material/Notifications';
 import EmailIcon from '@mui/icons-material/Email';
 import {
     faPersonDigging,
@@ -11,7 +10,6 @@ import {
     faPeopleGroup
 } from "@fortawesome/free-solid-svg-icons";
 import {faIdCard} from "@fortawesome/free-regular-svg-icons";
-import {Badge} from "@mui/material";
 import SingOutButton from "./SingOutButton";
 import {useEffect, useState} from "react";
 import Axios from "axios";
@@ -37,7 +35,7 @@ const Navbar = () => {
             setUser(res.data)
             console.log(res.data)
         }, fail => {
-            if(fail.message=="Request failed with status code 403"){
+            if(fail.message==="Request failed with status code 403"){
                 alert("You have no permission to access the data!")
                 navigate('/')
             }
@@ -46,7 +44,7 @@ const Navbar = () => {
         })
 
 
-    }, [email, token]);
+    }, [email, navigate, token]);
 
     function changeLinks(job) {
         if (job !== undefined) {

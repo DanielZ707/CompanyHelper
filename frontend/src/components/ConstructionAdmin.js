@@ -26,7 +26,7 @@ const Construction2Admin = (props) => {
         }).then((res) => {
             setUsers(res.data)
         }, fail => {
-            if(fail.message=="Request failed with status code 403"){
+            if(fail.message==="Request failed with status code 403"){
                 alert("You have no permission to access the data!")
                 navigate('/')
             }
@@ -43,7 +43,7 @@ const Construction2Admin = (props) => {
         }).then((res) => {
             setConstruction(res.data)
         }, fail => {
-            if(fail.message=="Request failed with status code 403"){
+            if(fail.message==="Request failed with status code 403"){
                 alert("You have no permission to access the data!")
                 navigate('/')
             }
@@ -59,14 +59,14 @@ const Construction2Admin = (props) => {
         }).then((res) => {
             setTeam(res.data)
         }, fail => {
-            if(fail.message=="Request failed with status code 403"){
+            if(fail.message==="Request failed with status code 403"){
                 alert("You have no permission to access the data!")
                 navigate('/')
             }
             console.error(fail);
             alert("Some error has occurred, please try again.")
         })
-    }, [props.nameCon, token]);
+    }, [navigate, props.nameCon, token]);
     return (
         <nav className="construction2">
             <div className="teamList">
@@ -81,7 +81,7 @@ const Construction2Admin = (props) => {
                 <div className="employeesFlex">
                     {users &&
                         users.length > 0 &&
-                        users.map(({_id, name, surname, email, password, telephone, job, team}) => {
+                        users.map(({_id, name, surname, email, telephone, job}) => {
                             return (
                                 <div className="post-card" key={_id}>
                                     <div className="employeesNameColumn">

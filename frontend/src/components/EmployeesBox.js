@@ -1,6 +1,4 @@
 import {Avatar} from "@mui/material";
-import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {faSquarePlus} from "@fortawesome/free-regular-svg-icons";
 import Navbar from "./Navbar";
 import {useEffect, useState} from "react";
 import Axios from "axios";
@@ -37,14 +35,14 @@ const EmployeesBox = () => {
         }).then((res) => {
             setManagers(res.data)
         }, fail => {
-            if(fail.message=="Request failed with status code 403"){
+            if(fail.message==="Request failed with status code 403"){
                 alert("You have no permission to access the data!")
                 navigate('/')
             }
             console.error(fail);
             alert("Some error has occurred, please try again.")
         })
-    }, [token]);
+    }, [navigate,token]);
 
     useEffect(() => {
         Axios.post("http://localhost:8080/allUsers", {
@@ -55,14 +53,14 @@ const EmployeesBox = () => {
         }).then((res) => {
             setUsers(res.data)
         }, fail => {
-            if(fail.message=="Request failed with status code 403"){
+            if(fail.message==="Request failed with status code 403"){
                 alert("You have no permission to access the data!")
                 navigate('/')
             }
             console.error(fail);
             alert("Some error has occurred, please try again.")
         })
-    }, [token]);
+    }, [navigate,token]);
 
     return (
         <div className="employeesPage">
@@ -71,7 +69,7 @@ const EmployeesBox = () => {
                 <div className="dashboardUp">
                     {managers &&
                         managers.length > 0 &&
-                        managers.map(({_id, name, surname, email, password, telephone, job, team}) => {
+                        managers.map(({_id, name, surname, job}) => {
                             return (
                                 <div className="avatarBackground">
                                     <div className="avatar">
@@ -93,7 +91,7 @@ const EmployeesBox = () => {
                         <div className="employeesFlex">
                             {users &&
                                 users.length > 0 &&
-                                users.map(({_id, name, surname, email, password, telephone, job, team}) => {
+                                users.map(({_id, name, surname, email, telephone, job}) => {
                                     return (
                                         <div className="post-card" key={_id}>
                                             <div className="employeesNameColumn">

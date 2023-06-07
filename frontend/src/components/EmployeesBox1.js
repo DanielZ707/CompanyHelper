@@ -1,4 +1,4 @@
-import {Avatar, Badge} from "@mui/material";
+import {Avatar} from "@mui/material";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import {faSquarePlus} from "@fortawesome/free-regular-svg-icons";
@@ -66,7 +66,7 @@ const EmployeesBox1 = () => {
                 <div className="dashboardUp">
                     {managers &&
                         managers.length > 0 &&
-                        managers.map(({_id, name, surname, email, password, telephone, job, team}) => {
+                        managers.map(({_id, name, surname, job}) => {
                             return (
                                 <div className="avatarBackground">
                                     <div className="avatar">
@@ -90,7 +90,7 @@ const EmployeesBox1 = () => {
                         <div className="employeesFlex">
                             {users &&
                                 users.length > 0 &&
-                                users.map(({_id, name, surname, email, password, telephone, job, team}) => {
+                                users.map(({_id, name, surname, email, telephone, job}) => {
                                     return (
                                         <div className="post-card" key={_id}>
                                             <div className="employeesNameColumn">

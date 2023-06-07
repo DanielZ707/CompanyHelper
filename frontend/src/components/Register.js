@@ -39,11 +39,11 @@ const Register = () => {
                 }).then((res) => {
                     console.log(res.data);
 
-                    if (res.data.message == "We are sorry but you are not one of our employees") {
+                    if (res.data.message === "We are sorry but you are not one of our employees") {
                         alert("We are sorry but you are not one of our employees");
-                    } else if (res.data.message == "Passwords do not match") {
+                    } else if (res.data.message === "Passwords do not match") {
                         alert("Passwords do not match");
-                    } else if (res.data.message == "This email is used by existing account") {
+                    } else if (res.data.message === "This email is used by existing account") {
                         alert("This email is used by existing account");
                     } else {
                         alert("Employee has been registered successfully!");

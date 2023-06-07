@@ -1,7 +1,5 @@
 import TeamList from "./TeamList";
-import TextBox from "./TextSquare";
-import {NavLink, useNavigate} from "react-router-dom";
-import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
+import {NavLink} from "react-router-dom";
 import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
 import Navbar from "./Navbar";
 import {useEffect, useState} from "react";
@@ -14,7 +12,7 @@ const Dashboard = () => {
     const [constructions,setConstructions] = useState("")
 
     const token = localStorage.getItem('user');
-    const navigate = useNavigate();
+
 
     useEffect(() => {
         Axios.post("http://localhost:8080/allUsers", {
@@ -24,7 +22,6 @@ const Dashboard = () => {
             }
         }).then((res) => {
             setUsers(res.data)
-        }, fail => {
         })
     }, [token]);
 

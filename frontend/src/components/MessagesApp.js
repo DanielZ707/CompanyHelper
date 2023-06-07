@@ -25,15 +25,10 @@ const MessagesApp = () => {
         ChatAPI.sendMessage({username: email}, msgText).then(res => {
             console.log('Sent', res);
         }).catch(err => {
-            console.log('Error Occured while sending message to api');
+            console.log('Error Occured while sending message to api',err);
         })
     }
-
-
-    const token = localStorage.getItem('user')
     const email = localStorage.getItem('email')
-
-
     return (
         <div className="Messages">
             <>

@@ -5,7 +5,7 @@ import React from "react";
 
 const localizer = momentLocalizer(moment)
 
-const CalendarEvents = (props) => (
+const CalendarEvents = () => (
     <div className="calendarPage">
         <Navbar/>
         <Calendar

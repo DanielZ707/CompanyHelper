@@ -2,7 +2,6 @@ import Navbar from "./Navbar";
 import React, {useEffect, useState} from "react";
 import Axios from "axios";
 import Construction from "./Construction";
-import {useNavigate} from "react-router-dom";
 
 const DashboardManager = () => {
 
@@ -12,7 +11,6 @@ const DashboardManager = () => {
 
     const token = localStorage.getItem('user');
 
-    const navigate = useNavigate();
 
     useEffect(() => {
         Axios.post("http://localhost:8080/allUsers", {}, {
@@ -21,7 +19,6 @@ const DashboardManager = () => {
             }
         }).then((res) => {
             setUsers(res.data)
-        }, fail => {
         })
         Axios.get("http://localhost:8080/allConstructions", {
             headers: {
@@ -62,7 +59,7 @@ const DashboardManager = () => {
                 <div className="dashboardNavi">
                     {constructions &&
                         constructions.length > 0 &&
-                        constructions.map(({idConstruction, name, town, street, buildingNumber, deadlineDay, progress}) => {
+                        constructions.map(({name}) => {
                             return (<Construction nameCon = {name}/>);
                         })}
                 </div>

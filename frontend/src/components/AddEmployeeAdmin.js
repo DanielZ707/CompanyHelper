@@ -1,4 +1,4 @@
-import React, {useRef, useState} from "react"
+import React, {useState} from "react"
 import axios from "axios"
 import logo from "../images/logo.png";
 import {Link, useNavigate} from "react-router-dom";
@@ -42,18 +42,18 @@ const AddEmployeeAdmin = () => {
                 }).then((res) => {
                     console.log(res.data);
 
-                    if (res.data.message == "We are sorry but you are not one of our employees") {
+                    if (res.data.message === "We are sorry but you are not one of our employees") {
                         alert("We are sorry but you are not one of our employees");
-                    } else if (res.data.message == "Passwords do not match") {
+                    } else if (res.data.message === "Passwords do not match") {
                         alert("Passwords do not match");
-                    } else if (res.data.message == "This email is used by existing account") {
+                    } else if (res.data.message === "This email is used by existing account") {
                         alert("This email is used by existing account");
                     } else {
                         alert("Employee has been registered successfully!");
                         navigate('/employeesAdmin');
                     }
                 }, fail => {
-                    if(fail.message=="Request failed with status code 403"){
+                    if(fail.message==="Request failed with status code 403"){
                         alert("You have no permission to access the data!")
                         navigate('/')
                     }

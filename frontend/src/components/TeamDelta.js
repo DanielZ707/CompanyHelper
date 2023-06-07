@@ -7,6 +7,7 @@ const TeamDelta = () => {
     const navigate = useNavigate();
 
     const [users, setUsers] = useStateWithCallback("");
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     const setData = (usersData) => {
         setUsers(usersData, (prevValue, newValue) => {
             console.log(newValue);
@@ -26,20 +27,20 @@ const TeamDelta = () => {
         }).then((res) => {
             setData(res.data)
         }, fail => {
-            if(fail.message=="Request failed with status code 403"){
+            if(fail.message==="Request failed with status code 403"){
                 alert("You have no permission to access the data!")
                 navigate('/')
             }
             console.error(fail);
             alert("Some error has occurred, please try again.")
         })
-    },[setData, token]);
+    },[navigate, setData, token]);
 
     return (
         <div className="employeesFlex">
             {users &&
                 users.length > 0 &&
-                users.map(({_id, name, surname, email, password, telephone, job, team}) => {
+                users.map(({_id, name, surname, email, telephone, job}) => {
                     return (
                         <div className="post-card" key={_id}>
                             <div className="employeesNameColumn">
