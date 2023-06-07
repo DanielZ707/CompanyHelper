@@ -112,11 +112,6 @@ public class TeamController {
 
     }
 
-    private record TeamRequestCons(
-            Long id) {
-
-    }
-
 
     private record TeamRequestChangeName(
             @NotNull(message = "0")
