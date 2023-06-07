@@ -1,0 +1,14 @@
+<component name="InspectionProjectProfileManager">
+  <profile version="1.0">
+    <option name="myName" value="Project Default" />
+    <inspection_tool class="DuplicatedCode" enabled="true" level="WEAK WARNING" enabled_by_default="true">
+      <Languages>
+        <language minSize="429" name="JavaScript" />
+      </Languages>
+    </inspection_tool>
+    <inspection_tool class="Eslint" enabled="true" level="WARNING" enabled_by_default="true" />
+    <inspection_tool class="RequiredAttributes" enabled="true" level="WARNING" enabled_by_default="true">
+      <option name="myAdditionalRequiredHtmlAttributes" value="label,interpolation,tickValues,categories,axisValue,axisComponent,dependentAxis,fixLabelOverlap,events,fixLabelOverlap,gridComponent,gridComponent,fixLabelOverlap,gridComponent,groupComponent,fixLabelOverlap,axisComponent,tickCount,gridComponent,groupComponent,crossAxis,fixLabelOverlap,gridComponent,fixLabelOverlap,gridComponent,groupComponent,fixLabelOverlap,gridComponent,dependentAxis,gridComponent,gridComponent,origin,stringMap,offsetY,fixLabelOverlap,invertAxis,invertAxis,gridComponent,axisComponent,axisComponent,axisComponent,gridComponent,groupComponent,fixLabelOverlap,children" />
+    </inspection_tool>
+  </profile>
+</component>
